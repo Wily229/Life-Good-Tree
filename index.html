@@ -1,0 +1,87 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d1912"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><title>Life Tree</title>
+<style>
+@font-face{font-family:Fraunces;src:url(fraunces-600.woff2) format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:Manrope;src:url(manrope-500.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:Manrope;src:url(manrope-700.woff2) format('woff2');font-weight:700;font-display:swap}
+:root{--bg:#0d1912;--card:#14241b;--bd:#233a2d;--fg:#e8efe5;--mu:#8ea698;--ac:#a5d97f;--on:#0d1912;--fruit:#f0a85b;--bark:#8b6b4b;color-scheme:dark}
+@media(prefers-color-scheme:light){:root{--bg:#f1f4ec;--card:#fff;--bd:#d9e1d3;--fg:#15251b;--mu:#586a5d;--ac:#2f6b3a;--on:#fff;--fruit:#d9822b;--bark:#6f5338;color-scheme:light}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 Manrope,system-ui,sans-serif;font-weight:500;background:var(--bg);color:var(--fg);padding:env(safe-area-inset-top) 0 calc(72px + env(safe-area-inset-bottom))}
+main{max-width:560px;margin:auto;padding:18px 18px 8px}h1,h2{font:600 34px/1.1 Fraunces,Georgia,serif;letter-spacing:-.01em;margin:2px 0 6px}h2{font-size:28px}
+.dt{color:var(--mu);font-size:13px;text-transform:capitalize}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:12px 0}
+button,input,select{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:11px 14px;min-height:44px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button{font-weight:700}button.p{background:var(--ac);color:var(--on);border-color:var(--ac)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;border-radius:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 2px;font-size:11px;color:var(--mu)}
+nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}nav .on{color:var(--ac)}
+.r{display:flex;gap:10px;align-items:center;justify-content:space-between}.m{color:var(--mu);font-size:13px}
+.bar{height:6px;border-radius:3px;background:var(--bd);margin:7px 0 3px}.bar i{display:block;height:100%;border-radius:3px;background:var(--ac);transition:width .5s}
+.e{width:84px;padding:9px}.f input:not([type=checkbox]),.f select{width:100%;margin:5px 0}.dy{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
+.hero{display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:center;padding:18px 0 10px}.rw{position:relative;width:132px;height:132px}
+.rv{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.rv b{font:600 40px/1 Fraunces,serif}.rv span{font-size:11px;color:var(--mu)}
+.rt{fill:none;stroke:var(--bd);stroke-width:8}.rf{fill:none;stroke:var(--ac);stroke-width:8;stroke-linecap:round;transition:stroke-dasharray .7s}
+.hs{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px}.hs b{display:block;font:600 21px/1.1 Fraunces,serif}.hs span{font-size:12px;color:var(--mu)}
+.ls{border-top:1px solid var(--bd);margin-top:12px}.hr{display:flex;align-items:center;gap:14px;padding:14px 2px;border-bottom:1px solid var(--bd)}.hm{flex:1;min-width:0}.hm b{display:block}.hm span{font-size:12.5px;color:var(--mu)}
+.ck{width:36px;height:36px;min-height:0;border-radius:50%;padding:0;border:2px solid var(--bd);background:none;color:var(--on)}.ck.on{background:var(--ac);border-color:var(--ac)}
+.bg2{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--bd);background:var(--card);font:600 15px Fraunces,serif;color:var(--ac)}
+.tr svg{display:block;max-height:58vh}.bk{fill:none;stroke:var(--bark)}.tk{fill:var(--bark)}.fr{fill:var(--fruit)}.lb{fill:var(--mu);font:700 11px Manrope,sans-serif}
+</style></head><body><div id="app"></div><script>
+const DOM=[['A','Spiritualité'],['B','Physique'],['C','Mental et émotions'],['D','Engagements spirituels'],['E','Vie professionnelle'],['H','Développement personnel']],
+TY={done:'Fait / pas fait',dur:'Durée',qty:'Quantité',self:'Auto-évaluation (1 à 3)'},
+E=new TextEncoder(),$=document.getElementById('app'),$$=i=>document.getElementById(i),
+L=(a,f)=>a.map(f).join(''),pc=v=>Math.round(v*100)+' %',msg=t=>$$('ms').textContent=t;
+let S,tab='j',locked=true,tries=0,hid=0,DBH;
+const b64=b=>{let s='';new Uint8Array(b).forEach(c=>s+=String.fromCharCode(c));return btoa(s)},ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),
+idb=()=>DBH||(DBH=new Promise((ok,ko)=>{const r=indexedDB.open('lifetree',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)})),
+dbg=async()=>{const d=await idb();return new Promise(ok=>{const q=d.transaction('k').objectStore('k').get('s');q.onsuccess=()=>ok(q.result)})},
+save=async()=>{const d=await idb();return new Promise(ok=>{const t=d.transaction('k','readwrite');t.objectStore('k').put(S,'s');t.oncomplete=ok})};
+async function hp(pin,salt){const k=await crypto.subtle.importKey('raw',E.encode(pin),'PBKDF2',false,['deriveBits']);return b64(await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},k,256))}
+async function key(pw,salt,use){const k=await crypto.subtle.importKey('raw',E.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,use)}
+const iso=d=>{const t=new Date(d);t.setMinutes(t.getMinutes()-t.getTimezoneOffset());return t.toISOString().slice(0,10)},
+day=n=>{const d=new Date();d.setDate(d.getDate()-n);return d},
+P=(x,v)=>v==null?0:x.t=='done'?(v?1:0):x.t=='self'?(v-1)/2:Math.min(1,v/x.g),
+lvl=p=>{let n=0;while(50*(n+1)*(n+2)<=p)n++;return n};
+function disc(hs,n){let pl=0,ok=0,sp=0,dp=0,de=0;for(let i=0;i<n;i++){const d=day(i),k=iso(d);let a=0,e=0;for(const x of hs)if(x.days.includes(d.getDay())){a++;const p=P(x,S.ent[x.id+'|'+k]);sp+=p;if(p>=x.th)ok++;if(p>0)e=1}if(a){dp++;de+=e;pl+=a}}return pl?{E:ok/pl,F:sp/pl,R:de/dp,D:.5*ok/pl+.3*sp/pl+.2*de/dp}:null}
+const pts=d=>S.habits.filter(x=>x.d==d).reduce((s,x)=>s+Object.keys(S.ent).filter(k=>k.startsWith(x.id+'|')).reduce((a,k)=>a+P(x,S.ent[k])*x.pts,0),0);
+function streak(x){let c=0,b=0,r=0,go=true;for(let i=0;i<365;i++){const d=day(i);if(!x.days.includes(d.getDay()))continue;const v=S.ent[x.id+'|'+iso(d)];if(i==0&&v==null)continue;if(go&&P(x,v)>=x.th)c++;else go=false}
+for(let i=365;i>=0;i--){const d=day(i);if(!x.days.includes(d.getDay()))continue;const v=S.ent[x.id+'|'+iso(d)];if(i==0&&v==null)continue;if(P(x,v)>=x.th){r++;b=Math.max(b,r)}else r=0}return[c,b]}
+function vLock(){return `<main><div class="c f"><h2>Life Tree</h2><p class="m">${S.pin?'Entrez votre code PIN.':'Créez un code PIN de 4 à 8 chiffres.'}</p><input id="pn" type="password" inputmode="numeric" maxlength="8" autocomplete="off" aria-label="Code PIN">${S.pin?'':'<input id="pc" type="password" inputmode="numeric" maxlength="8" placeholder="Confirmer le code" autocomplete="off">'}<button class="p" data-a="unl" style="width:100%;margin-top:8px">${S.pin?'Déverrouiller':'Créer le code'}</button><p id="er" class="m"></p></div></main>`}
+async function unl(){const a=$$('pn').value,e=$$('er');if(!/^\d{4,8}$/.test(a))return e.textContent='Saisissez 4 à 8 chiffres.';
+if(!S.pin){if(a!==$$('pc').value)return e.textContent='Les deux codes sont différents.';const s=crypto.getRandomValues(new Uint8Array(16));S.pin={s:b64(s),h:await hp(a,s)};await save()}
+else if(await hp(a,ub(S.pin.s))!==S.pin.h){tries++;e.textContent='Code incorrect. Patientez…';await new Promise(r=>setTimeout(r,Math.min(30000,tries*tries*500)));return e.textContent='Code incorrect.'}
+tries=0;locked=false;render()}
+const nm=c=>DOM.find(d=>d[0]==c)[1],Q=(a,b,c,t)=>[0,1].map(i=>(1-t)*(1-t)*a[i]+2*(1-t)*t*b[i]+t*t*c[i]);
+function vToday(){const t=iso(new Date()),w=new Date().getDay(),hs=S.habits.filter(x=>x.days.includes(w)),D=disc(S.habits,7),v=D?D.D:0,C=2*Math.PI*52,done=hs.filter(x=>P(x,S.ent[x.id+'|'+t])>=x.th).length,date=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+return `<div class="dt">${date}</div><h1>Aujourd’hui</h1><section class="hero"><div class="rw"><svg viewBox="0 0 120 120" role="img" aria-label="Discipline ${pc(v)}"><circle cx="60" cy="60" r="52" class="rt"/><circle cx="60" cy="60" r="52" class="rf" stroke-dasharray="${C*v} ${C}" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${D?Math.round(v*100):'–'}</b><span>discipline</span></div></div><div class="hs"><div><b>${done}/${hs.length}</b><span>faites aujourd’hui</span></div>${D?`<div><b>${pc(D.E)}</b><span>engagement</span></div><div><b>${pc(D.F)}</b><span>effort</span></div><div><b>${pc(D.R)}</b><span>régularité</span></div>`:'<div class="m" style="grid-column:1/3">Ajoutez une habitude pour démarrer.</div>'}</div></section><div class="ls">`+
+L(hs,x=>{const v=S.ent[x.id+'|'+t],[c,b]=streak(x),ctl=x.t=='done'?`<button class="ck ${v?'on':''}" data-a="tg" data-i="${x.id}" aria-label="Marquer ${x.n}">${v?'✓':''}</button>`:x.t=='self'?`<select class="e" data-a="set" data-i="${x.id}"><option value="">–</option>${L([1,2,3],q=>`<option ${v==q?'selected':''}>${q}</option>`)}</select>`:`<input class="e" type="number" inputmode="decimal" min="0" value="${v??''}" data-a="set" data-i="${x.id}" aria-label="${x.u}">`;
+return `<div class="hr"><div class="hm"><b>${x.n}</b><span>${nm(x.d)} · série ${c} · record ${b}${x.t=='dur'||x.t=='qty'?' · cible '+x.g+' '+x.u:''}</span></div>${ctl}</div>`})+`</div>`+(hs.length?'':'<p class="m">Aucune habitude prévue aujourd’hui.</p>')}
+function vTree(){const info=DOM.map(d=>{const p=pts(d[0]),hs=S.habits.filter(x=>x.d==d[0]),v=disc(hs,28);return{d,p,l:lvl(p),v:v?v.D:0,n:hs.length}}),avg=info.reduce((s,o)=>s+o.l,0)/info.length;
+let s=`<svg viewBox="0 0 320 390" width="100%" role="img" aria-label="Arbre de progression"><defs><radialGradient id="gl" cx="50%" cy="42%" r="55%"><stop offset="0" style="stop-color:var(--ac)" stop-opacity=".2"/><stop offset="1" style="stop-color:var(--ac)" stop-opacity="0"/></radialGradient></defs><rect width="320" height="390" fill="url(#gl)"/><ellipse cx="160" cy="380" rx="118" ry="6" fill="var(--bd)"/><path class="bk" d="M160 378q-24 5-44 0M160 378q24 5 44 0" stroke-width="3" stroke-linecap="round"/><path class="tk" d="M146 378C152 300 154 220 157 126L163 126C166 220 168 300 174 378Z"/>`;
+info.forEach((o,i)=>{const R=i%2?1:-1,y=330-i*42,ln=48+Math.min(8,o.l)*12,a=[160,y],b=[160+R*ln*.5,y-10-o.l*2],c=[160+R*ln,y-34-Math.min(o.l,6)*4];
+s+=`<path class="bk" d="M${a} Q${b} ${c}" stroke-width="4.5" stroke-linecap="round"/>`;
+const nl=o.n?Math.min(12,3+o.n*2+o.l):0,col=`hsl(${28+o.v*92} 58% ${36+o.v*12}%)`;
+for(let k=1;k<=nl;k++){const q=Q(a,b,c,.2+.8*k/nl),z=k%2?-1:1,ang=(R>0?0:180)+z*R*38;s+=`<path d="M0 0Q7-8 17 0Q7 8 0 0Z" fill="${col}" transform="translate(${q[0]} ${q[1]+z*2}) rotate(${ang})"/>`}
+for(let k=0;k<Math.min(o.l,5);k++)s+=`<circle class="fr" cx="${c[0]-R*k*10}" cy="${c[1]+13}" r="5.5"/><circle cx="${c[0]-R*k*10-1.5}" cy="${c[1]+11}" r="1.6" fill="#fff" opacity=".5"/>`;
+s+=`<text class="lb" x="${c[0]+R*4}" y="${c[1]-9}" text-anchor="middle">${o.d[0]}</text>`});
+return `<div class="dt">Niveau moyen ${avg.toFixed(1)}</div><h1>Votre arbre</h1><div class="tr">${s}</svg></div><p class="m">Hauteur : points cumulés, jamais perdus. Feuillage : discipline sur 28 jours. Un fruit par niveau.</p><div class="ls">`+L(info,o=>`<div class="hr"><span class="bg2">${o.d[0]}</span><div class="hm"><b>${o.d[1]}</b><span>Niveau ${o.l} · ${Math.round(o.p*10)/10} pts · palier suivant ${50*(o.l+1)*(o.l+2)} · vitalité ${pc(o.v)}${o.n?'':' · aucune habitude'}</span><div class="bar"><i style="width:${o.v*100}%"></i></div></div></div>`)+`</div>`}
+function vHab(){return `<div class="c f"><b>Nouvelle habitude</b><input id="hn" placeholder="Nom"><select id="hd">${L(DOM,d=>`<option value="${d[0]}">${d[0]} · ${d[1]}</option>`)}</select><select id="ht">${L(Object.keys(TY),k=>`<option value="${k}">${TY[k]}</option>`)}</select><input id="hg" type="number" inputmode="decimal" placeholder="Cible (durée ou quantité)"><input id="hu" placeholder="Unité (min, pompes…)"><select id="hp"><option value="1">1 point</option><option value="2">2 points</option><option value="3">3 points</option></select><div class="dy">${L([1,2,3,4,5,6,0],d=>`<label><input type="checkbox" class="dd" value="${d}" checked>${'DLMMJVS'[d]}</label>`)}</div><button class="p" data-a="add">Ajouter l’habitude</button></div>`+L(S.habits,x=>`<div class="c r"><div><b>${x.n}</b><div class="m">${x.d} · ${TY[x.t]}${x.g>1||x.t=='dur'||x.t=='qty'?' · '+x.g+' '+x.u:''} · ${x.pts} pt</div></div><button data-a="del" data-i="${x.id}" aria-label="Supprimer">Supprimer</button></div>`)}
+function vSave(){return `<div class="c f"><b>Sauvegarde chiffrée</b><p class="m">Le fichier est chiffré (AES-GCM) avec ce mot de passe. S’il est perdu, la sauvegarde est illisible, sans recours. Le code PIN n’est pas inclus.</p><input id="bp" type="password" placeholder="Mot de passe de sauvegarde (8 caractères minimum)" autocomplete="off"><button class="p" data-a="exp">Créer la sauvegarde</button><input id="bf" type="file" accept=".lifetree" style="margin-top:10px"><button data-a="imp">Restaurer ce fichier</button><p id="ms" class="m" role="status"></p></div><div class="c"><button data-a="lock">Verrouiller maintenant</button> <button data-a="wipe">Effacer toutes mes données</button></div>`}
+const dl=(t,n)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/octet-stream'}));a.download=n;a.click()};
+async function exp(){const pw=$$('bp').value;if(pw.length<8)return msg('Mot de passe : 8 caractères minimum.');const s=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await key(pw,s,['encrypt']),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,E.encode(JSON.stringify({habits:S.habits,ent:S.ent})));dl(JSON.stringify({v:1,s:b64(s),i:b64(iv),d:b64(ct)}),'lifetree-'+iso(new Date())+'.lifetree');msg('Sauvegarde créée.')}
+async function imp(){const f=$$('bf').files[0],pw=$$('bp').value;if(!f||!pw)return msg('Choisissez un fichier et saisissez le mot de passe.');try{const j=JSON.parse(await f.text()),k=await key(pw,ub(j.s),['decrypt']),d=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(j.i)},k,ub(j.d))));if(!confirm('Remplacer toutes les données actuelles ?'))return;S.habits=d.habits;S.ent=d.ent;await save();tab='j';render()}catch{msg('Mot de passe incorrect ou fichier invalide.')}}
+async function wipe(){if(confirm('Effacer toutes les données ?')&&confirm('Dernière confirmation : cette action est irréversible.')){(await idb()).close();indexedDB.deleteDatabase('lifetree');(await caches.keys()).forEach(x=>caches.delete(x));location.reload()}}
+function render(){if(locked){$.innerHTML=vLock();return}
+const IC={"j": "<path d=\"M5 12l4 4 10-10\"/>", "t": "<path d=\"M12 21V11M12 11C8 11 6 8 6 5c4 0 6 2 6 6zM12 14c4 0 6-3 6-6-4 0-6 2-6 6z\"/>", "h": "<path d=\"M5 7h14M5 12h14M5 17h9\"/>", "s": "<path d=\"M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z\"/>"};
+$.innerHTML=`<main>${{j:vToday,t:vTree,h:vHab,s:vSave}[tab]()}</main><nav>${L([['j','Aujourd’hui'],['t','Arbre'],['h','Habitudes'],['s','Sauvegarde']],a=>`<button data-a="tab" data-i="${a[0]}" class="${tab==a[0]?'on':''}"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[a[0]]}</svg>${a[1]}</button>`)}</nav>`}
+document.addEventListener('click',async e=>{const b=e.target.closest('button[data-a]');if(!b)return;const a=b.dataset.a,i=b.dataset.i;
+if(a=='unl')return unl();if(a=='tab'){tab=i;return render()}if(a=='exp')return exp();if(a=='imp')return imp();if(a=='wipe')return wipe();if(a=='lock'){locked=true;return render()}
+if(a=='tg'){const k=i+'|'+iso(new Date());S.ent[k]?delete S.ent[k]:S.ent[k]=1}
+else if(a=='del'){if(!confirm('Supprimer cette habitude et son historique ?'))return;S.habits=S.habits.filter(x=>x.id!=i);for(const k in S.ent)if(k.startsWith(i+'|'))delete S.ent[k]}
+else if(a=='add'){const n=$$('hn').value.trim(),days=[...document.querySelectorAll('.dd:checked')].map(x=>+x.value);if(!n||!days.length)return alert('Indiquez un nom et au moins un jour prévu.');S.habits.push({id:Date.now().toString(36),n,d:$$('hd').value,t:$$('ht').value,g:+$$('hg').value||1,u:$$('hu').value,pts:+$$('hp').value,th:1,days})}
+await save();render()});
+document.addEventListener('change',async e=>{const t=e.target;if(t.dataset.a!='set')return;const k=t.dataset.i+'|'+iso(new Date());t.value===''?delete S.ent[k]:S.ent[k]=+t.value;await save();render()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hid=Date.now();else if(S&&S.pin&&!locked&&Date.now()-hid>60000){locked=true;render()}});
+(async()=>{S=await dbg()||{pin:null,habits:[],ent:{}};navigator.storage&&navigator.storage.persist&&navigator.storage.persist();render()})();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script></body></html>
